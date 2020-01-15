@@ -9,19 +9,26 @@ const fonts: {[name: string]: Font.FontSource;} = {
   'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
   'roboto-medium': require('./assets/fonts/Roboto-Medium.ttf'),
   'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
+  'roboto-light': require('./assets/fonts/Roboto-Light.ttf'),
   'questrial': require('./assets/fonts/Questrial-Regular.ttf')
 }
 
 const primaryColor: any = '#019CBB';
 
 const bodyText: any = {
-  fontSize: 100,
+  fontSize: 20,
   fontFamily: 'questrial'
+}
+
+const screenView: any = {
+  flex: 1,
+  height: '100%',
 }
 
 
 export { 
   primaryColor,
   bodyText,
-  fonts
+  fonts,
+  screenView
 }
