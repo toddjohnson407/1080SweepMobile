@@ -1,4 +1,4 @@
-/** 
+/*
  * This utility module provides methods related to a
  * user's account.
  */
@@ -36,7 +36,7 @@ const accountUtils = {
 }
 
 function loginUser(creds: any): Observable<any> {
-  return getRequest(userLoginEndpoint).pipe(tap(_ => {
+  return postRequest(userLoginEndpoint, creds).pipe(tap(_ => {
     userHasEmitted = false;
     requestUser();
   }))

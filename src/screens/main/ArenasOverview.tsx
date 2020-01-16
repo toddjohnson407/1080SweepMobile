@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, Button, SafeAreaView } from 'react-native';
 
 import { retrieveData, storeData, allKeys, removeAllKeysData } from '@utils/StorageSystem';
 
@@ -7,11 +7,15 @@ import { retrieveData, storeData, allKeys, removeAllKeysData } from '@utils/Stor
 import * as vars from '@base/variables';
 import accountUtils from '@utils/AccountUtils';
 
-export class Dashboard extends React.Component {
+export class ArenasOverview extends React.Component {
 
   state: any = {
     user: null
   }
+
+  static navigationOptions = {
+    title: 'Home',
+  };
 
   async componentDidMount() {
     // await storeData('ObjStore', { test: 'this is an obj' });
@@ -27,11 +31,10 @@ export class Dashboard extends React.Component {
 
   render(): any {
     return (
-      <View style={vars.screenView}>
-        <Text style={vars.bodyText}>Dashboard Screen Renders</Text>
-        <Image source={require('@assets/images/logo.png')} style={{ width: 200, height: 200 }}></Image>
-        <Button title="Test Logout" onPress={this.logout}/>
-      </View>
+      <SafeAreaView style={[vars.screenView, styles.arenasOverviewContainer]}>
+
+        <Text style={styles.arenasTitle}>Your Arenas</Text>
+      </SafeAreaView>
     )
   }
 
@@ -39,5 +42,16 @@ export class Dashboard extends React.Component {
 
 const styles = StyleSheet.create({
 
+  arenasOverviewContainer: {
+    // justifyContent: 'space-around'
+  },
+  
+  arenasTitle: {
+    paddingTop: 32,
+    fontSize: 40,
+    color: 'black',
+    fontFamily: 'roboto-light',
+    alignSelf: 'center'
+  }
 })
 

@@ -7,15 +7,15 @@ import axios, { AxiosStatic, AxiosRequestConfig, AxiosResponse, AxiosPromise } f
 
 
 let getRequest = (url: string, config?: AxiosRequestConfig): Observable<any> =>  {
-  let httpPromise = axios.get(url, config).then((res: AxiosResponse<any>) => res.data).catch((error: any) => ({ loggedIn: false, error }));
+  let httpPromise = axios.get(url, config).then((res: AxiosResponse<any>) => ({ res: res.data, status: res.status, error: false })).catch((error: any) => ({ res: error.response.data, status: error.response.status, error: true }));
   return from(httpPromise)
 }
 
 let postRequest = (url: string, data: any = null, config: AxiosRequestConfig = null): Observable<any> => {
   let httpPromise: AxiosPromise = axios.post(url, data, config).then((res: AxiosResponse<any>) => {
-    console.log('post', res.status);
-    return res.data
-  }).catch((error: any) => error);
+    let response: any = { res: res.data, error: false }
+    return response
+  }).catch((error: any) => ({ res: error, error: true }));
   return from(httpPromise);
 }
 

@@ -4,22 +4,38 @@ import BasicTextField from '@components/BasicTextField';
 import BasicButton from '@components/BasicButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import accountUtils from '@utils/AccountUtils';
+import { createFormField } from '@utils/FormUtils';
 
 import * as vars from '@base/variables'
 import { Observable } from 'rxjs';
 
+
+
 export class LoginRegister extends React.Component {
 
+  /** 
+   * Tracks whether or not component is mounted to
+   * ensure setState() isn't call while unmounted
+   */
   _isMounted: boolean = false;
+
+  static navigationOptions = {
+    title: 'Home',
+  };
 
   state: any = {
     user: null,
-    username: '',
-    password: '',
-    email: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
+
+    loginForm: [
+      createFormField('username', 'Username'),
+      createFormField('password', 'Password', 'none', true)
+    ],
+    registerForm: [
+      createFormField('confirmPassword', 'Confirm Password', 'none', true),
+      createFormField('firstName', 'First Name', 'words'),
+      createFormField('lastName', 'Last Name', 'words'),
+      createFormField('email', 'Email'),
+    ],
 
     otherAccountAction1: `Don't have an account?`,
     otherAccountAction2: `Sign Up Now`,
@@ -41,47 +57,19 @@ export class LoginRegister extends React.Component {
   login = (): any => {
     if (!this.state.isLoggingIn) this.register()
     else {
-      let { password, username } = this.state;
-      if (password && username) accountUtils.loginUser({ username, password }).subscribe();
+      let { loginForm } = this.state;
+      
+      if (loginForm.every(({value}) => !!value)) {
+        let [username, password] = loginForm.map(({ key, value }) => ({ [key]: value }));
+        let loginCredentials = Object.assign(username, password);
+        accountUtils.loginUser(loginCredentials).subscribe();
+      }
     }
   }
+
   register = (): any => {
-    console.log('Register');
+    console.log('Register Form:', this.state.registerForm)
   }
-
-  registerView: any = () => {
-    return (
-      <View style={[styles.registerSection]}>
-        <BasicTextField
-          label="Confirm Password"
-          autoCapitalize={'none'}
-          secureTextEntry={true}
-            value={this.state.confirmPassword}
-            onChangeText={confirmPassword => this._isMounted && this.setState({ confirmPassword })} />
-        <BasicTextField
-          label="First Name"
-          autoCapitalize={'none'}
-          value={this.state.firstName}
-          onChangeText={firstName => this._isMounted && this.setState({ firstName })} />
-        <BasicTextField
-          label="Last Name"
-          autoCapitalize={'none'}
-          value={this.state.lastName}
-          onChangeText={lastName => this._isMounted && this.setState({ lastName })} />
-        <BasicTextField
-          label="Email"
-          autoCapitalize={'none'}
-          value={this.state.email}
-          onChangeText={email => this._isMounted && this.setState({ email })} />
-        <BasicTextField
-          label="Username"
-          autoCapitalize={'none'}
-          value={this.state.username}
-          onChangeText={username => this._isMounted && this.setState({ username })} />
-      </View>
-    )
-  }
-
 
   toggleAccountAction = (): any => {
 
@@ -94,28 +82,45 @@ export class LoginRegister extends React.Component {
     }));
   }
 
-  forgotPassword(): any {
+  //TODO: Implement forgot password and reset password features 
+  forgotPassword(): any {}
 
+  /** Updates a form field value by its index */
+  handleFormUpdate(formName: string, fieldIndex: number, newValue: any): void {
+    this.setState((prevState: any) => {
+      let formCopy = [...prevState[formName]];
+      formCopy[fieldIndex] = { ...formCopy[fieldIndex], value: newValue };
+      return ({ [formName]: formCopy })
+    });
   }
 
 
-  FormType = (): any => {
+  FormsView = (): any => {
     return (
       <View style={styles.loginFormContainer}>
-        <BasicTextField
-        label="Username"
-        autoCapitalize={'none'}
-        value={this.state.username}
-        onChangeText={username => this._isMounted && this.setState({ username })} />
-        <BasicTextField
-          label="Password"
-          autoCapitalize={'none'}
-          secureTextEntry={true}
-          value={this.state.password}
-          onChangeText={password => this._isMounted && this.setState({ password })} />
+        { this.state.loginForm.map((field: any, index: number) => {
+          return (
+            <BasicTextField
+            key={index}
+            label={field.label}
+            autoCapitalize={field.autoCapitalize}
+            secureTextEntry={field.isSecure}
+            value={field.value}
+            onChangeText={newVal => this._isMounted && this.handleFormUpdate('loginForm', index, newVal) } />
+          )
+        }) }
 
-        { !this.state.isLoggingIn ? <this.registerView/> : null }
-
+        { !this.state.isLoggingIn && this.state.registerForm.map((field: any, index: number) => {
+          return (
+            <BasicTextField
+              key={index}
+              label={field.label}
+              autoCapitalize={field.autoCapitalize}
+              secureTextEntry={field.isSecure}
+              value={field.value}
+              onChangeText={newVal => this._isMounted && this.handleFormUpdate('registerForm', index, newVal) } />
+          )
+        }) }
       </View> 
     );
   }
@@ -136,7 +141,7 @@ export class LoginRegister extends React.Component {
           </View> 
         }
 
-        <this.FormType/>
+        <this.FormsView/>
 
         <View style={styles.actionContainer}>
           <BasicButton style={{marginTop: 50}} title={this.state.isLoggingIn ? 'Log In' : 'Create Account'} onPress={this.login}/>

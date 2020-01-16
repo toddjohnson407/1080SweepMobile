@@ -23,6 +23,7 @@ const bodyText: any = {
 const screenView: any = {
   flex: 1,
   height: '100%',
+  backgroundColor: '#ffff'
 }
 
 
