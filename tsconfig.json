@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ES5",
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
     "lib": ["dom", "esnext"],
@@ -11,6 +12,7 @@
     "paths": {
       "@assets/*": ["assets/*"],
       "@screens/*": ["src/screens/*"],
+      "@utils/*": ["src/utils/*"],
       "@components/*": ["src/components/*"],
       "@base/*": ["*"]
     }

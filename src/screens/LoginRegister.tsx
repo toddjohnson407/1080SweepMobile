@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Animated, View, SafeAreaView, Text, StyleSheet, TouchableOpacity, UIManager, LayoutAnimation } from 'react-native';
 import BasicTextField from '@components/BasicTextField';
 import BasicButton from '@components/BasicButton';
 import { LinearGradient } from 'expo-linear-gradient';
+import accountUtils from '@utils/AccountUtils';
 
 import * as vars from '@base/variables'
+import { Observable } from 'rxjs';
 
 export class LoginRegister extends React.Component {
 
+  _isMounted: boolean = false;
+
   state: any = {
+    user: null,
     username: '',
     password: '',
     email: '',
@@ -21,24 +26,23 @@ export class LoginRegister extends React.Component {
     isLoggingIn: true
   }
 
+  getUserInfo: Observable<any> = accountUtils.userInfo;
+
   componentDidMount(): any {
-    fetch('http://localhost:3000/api/user/info').then(res => res.json()).then(resJson => console.log('INFO:', resJson)).catch(err => console.log('INFO ERROR:', err))
+    this._isMounted = true;
+    this.getUserInfo.subscribe(user => this._isMounted && this.setState({ user }));
   }
+
+  componentWillUnmount(): any {
+    this._isMounted = false;
+  }
+
 
   login = (): any => {
     if (!this.state.isLoggingIn) this.register()
     else {
       let { password, username } = this.state;
-      if (password && username) {
-        fetch('http://localhost:3000/api/auth/login/', {
-          method: 'POST',
-          mode: 'cors',
-          referrerPolicy: 'no-referrer-when-downgrade',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', },
-          body: JSON.stringify({ username, password })
-        }).then((response) => response.json()).catch(err => ('ERROR 1:' + err))
-          .then((resJson) => console.log(resJson)).catch((err) => ('ERROR 2: ' + err));
-      }
+      if (password && username) accountUtils.loginUser({ username, password }).subscribe();
     }
   }
   register = (): any => {
@@ -53,27 +57,27 @@ export class LoginRegister extends React.Component {
           autoCapitalize={'none'}
           secureTextEntry={true}
             value={this.state.confirmPassword}
-            onChangeText={confirmPassword => this.setState({ confirmPassword })} />
+            onChangeText={confirmPassword => this._isMounted && this.setState({ confirmPassword })} />
         <BasicTextField
           label="First Name"
           autoCapitalize={'none'}
           value={this.state.firstName}
-          onChangeText={firstName => this.setState({ firstName })} />
+          onChangeText={firstName => this._isMounted && this.setState({ firstName })} />
         <BasicTextField
           label="Last Name"
           autoCapitalize={'none'}
           value={this.state.lastName}
-          onChangeText={lastName => this.setState({ lastName })} />
+          onChangeText={lastName => this._isMounted && this.setState({ lastName })} />
         <BasicTextField
           label="Email"
           autoCapitalize={'none'}
           value={this.state.email}
-          onChangeText={email => this.setState({ email })} />
+          onChangeText={email => this._isMounted && this.setState({ email })} />
         <BasicTextField
           label="Username"
           autoCapitalize={'none'}
           value={this.state.username}
-          onChangeText={username => this.setState({ username })} />
+          onChangeText={username => this._isMounted && this.setState({ username })} />
       </View>
     )
   }
@@ -83,12 +87,13 @@ export class LoginRegister extends React.Component {
 
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     
-    this.setState((prevState: any) => ({ 
+    this._isMounted && this.setState((prevState: any) => ({ 
       isLoggingIn: !prevState.isLoggingIn, 
       otherAccountAction1: `${prevState.isLoggingIn ? 'Already have an account?' : "Don't have an account?"}`,
       otherAccountAction2: `${prevState.isLoggingIn ? 'Log In' : "Sign Up Now"}` 
     }));
   }
+
   forgotPassword(): any {
 
   }
@@ -101,13 +106,13 @@ export class LoginRegister extends React.Component {
         label="Username"
         autoCapitalize={'none'}
         value={this.state.username}
-        onChangeText={username => this.setState({ username })} />
+        onChangeText={username => this._isMounted && this.setState({ username })} />
         <BasicTextField
           label="Password"
           autoCapitalize={'none'}
           secureTextEntry={true}
           value={this.state.password}
-          onChangeText={password => this.setState({ password })} />
+          onChangeText={password => this._isMounted && this.setState({ password })} />
 
         { !this.state.isLoggingIn ? <this.registerView/> : null }
 
@@ -115,8 +120,8 @@ export class LoginRegister extends React.Component {
     );
   }
 
-  _setMinHeight(event): void { this.setState({ minHeight : event.nativeEvent.layout.height })}
-  _setMaxHeight(event): void { this.setState({ maxHeight : event.nativeEvent.layout.height })}
+  _setMinHeight(event): void { this._isMounted && this.setState({ minHeight : event.nativeEvent.layout.height })}
+  _setMaxHeight(event): void { this._isMounted && this.setState({ maxHeight : event.nativeEvent.layout.height })}
 
   render(): any {
     return (

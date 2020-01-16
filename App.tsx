@@ -11,6 +11,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import { Dashboard } from '@screens/main/Dashboard';
 import { LoginRegister } from '@screens/LoginRegister';
+import { Observable } from 'rxjs';
+import accountUtils from '@utils/AccountUtils';
 
 const MainNavigator = createStackNavigator(
   {
@@ -19,7 +21,7 @@ const MainNavigator = createStackNavigator(
   },
   {
     headerMode: 'none',
-    initialRouteName: 'LoginRegister',
+    initialRouteName: 'Dashboard',
     defaultNavigationOptions: { headerShown: false }
   }
 );
@@ -28,19 +30,22 @@ const AppContainer = createAppContainer(MainNavigator);
 
 export default class App extends React.Component {
 
-  state: any = { fontsLoaded: false }
+  state: any = { fontsLoaded: false, loggedIn: null, user: null }
 
   async componentDidMount() {
     await Font.loadAsync(fonts);
     this.setState({ fontsLoaded: true });
+    accountUtils.userInfo.subscribe(user => {
+      user ? this.setState({ loggedIn: true, user }) : this.setState({ loggedIn: false, user: null })
+    });
   }
 
   render(): any {
     return (
       <View style={styles.container}>
         { 
-          this.state.fontsLoaded ? (
-            <AppContainer/> 
+          this.state.fontsLoaded && this.state.loggedIn !== null ? ( 
+            this.state.loggedIn ? (<AppContainer/>) : (<LoginRegister/>)
           ) : null
         }
       </View>
