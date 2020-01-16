@@ -3,44 +3,64 @@
  * managing cached/local storage using AsyncStorage 
  */
 
-// import AsyncStorage from '@react-native-community/async-storage';
 import { AsyncStorage }from 'react-native';
 
-const STORAGE_KEY: string = '@test_key';
-
 /** Retrieves local data using the key of the item */
-async function _retrieveData() {
+async function retrieveData(key: string): Promise<{ error: boolean, value: string }> {
+  let dataInfo = { error: false, value: null };
   try {
-    const value = await AsyncStorage.getItem('@MySuperStore:key');
-    if (value !== null) {
-      // We have data!!
-      console.log(value);
-    } else console.log('damn')
+    const value = await AsyncStorage.getItem(key);
+    if (value) dataInfo.value = hasJsonStructure(value) ? JSON.parse(value) : value;
+    return dataInfo;
   } catch (error) {
-    // Error retrieving data
+    console.log('Error retrieving data from local storage:', error)
+    dataInfo.error = true;
+    return dataInfo;
   }
 };
 /** Stores data using the given key */
-async function _storeData() {
+async function storeData(key: string, data: string | Object): Promise<boolean> {
+  if (!(typeof data === 'object' || typeof data === 'string')) return false
   try {
-    await AsyncStorage.setItem('@MySuperStore:key', 'I like to save it.');
+    let dataValue: string = (typeof data === 'object') ? JSON.stringify(data) : data;
+    await AsyncStorage.setItem(key, dataValue);
+    return true;
   } catch (error) {
-    // Error saving data
+    console.log('Error saving data to local storage:', error);
+    return false
   }
 };
 
-// async function getLocalData (itemKey: string) {
-//   try {
-//     let localItem = await AsyncStorage.getItem(itemKey);
-//     console.log(localItem);
-//   } catch (e) { console.log(e) }
-// }
+/** Retrieves all keys for locally stored data */
+async function allKeys(): Promise<string | string[]> {
+  try {
+    return await AsyncStorage.getAllKeys();
+  } catch (error) {
+    return 'Error retrieving local storage keys: ' + error;
+  }
+}
 
-// async function storeLocalData (itemKey: string, data: any) {
-//   try {
-//     let newLocalItem = await AsyncStorage.setItem(itemKey, data);
-//     console.log(newLocalItem);
-//   } catch (e) { console.log(e) }
-// }
+async function removeAllKeysData(): Promise<boolean> {
+  try {
+    let keys = await allKeys();
+    if (typeof keys === 'string') return false
+    await AsyncStorage.multiRemove(keys);
+    return true
+  } catch (error) {
+    console.log('Error removing all local storage keys and related data:', error)
+    return false;
+  }
+}
 
-export { _retrieveData, _storeData }
+export { retrieveData, storeData, allKeys, removeAllKeysData }
+
+function hasJsonStructure(str: string) {
+  if (typeof str !== 'string') return false;
+  try {
+    const result = JSON.parse(str);
+    const type = Object.prototype.toString.call(result);
+    return type === '[object Object]' || type === '[object Array]';
+  } catch (err) {
+    return false;
+  }
+}
