@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import * as Font from 'expo-font';
 
-import { primaryColor, bodyText, fonts } from '@base/variables';
+import { primaryColor, bodyText, fonts, defaultNavigationOptions } from '@base/variables';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -21,20 +21,25 @@ import accountUtils from '@utils/AccountUtils';
 
 import { Ionicons, Foundation, MaterialIcons, MaterialCommunityIcons, Entypo, FontAwesome } from '@expo/vector-icons';
 
+
+const ArenasStack = createStackNavigator({ ArenasOverview }, { defaultNavigationOptions });
+const CreateArenaStack = createStackNavigator({ CreateArena }, { defaultNavigationOptions });
+const DashboardStack = createStackNavigator({ Dashboard }, { defaultNavigationOptions });
+const LibraryStack = createStackNavigator({ Library }, { defaultNavigationOptions });
+
 const TabNavigator = createBottomTabNavigator(
-// const TabNavigator = createMaterialBottomTabNavigator(
   {
-    Dashboard: { screen: Dashboard, navigationOptions: {
+    Dashboard: { screen: DashboardStack, navigationOptions: {
       tabBarIcon: (({tintColor}) => (
         <View><MaterialCommunityIcons size={30} color={tintColor} name="view-dashboard"/></View>
       )),
     }},
-    ArenasOverview: { screen: ArenasOverview, navigationOptions: {
+    ArenasOverview: { screen: ArenasStack, navigationOptions: {
       tabBarIcon: (({tintColor}) => (
         <View><MaterialCommunityIcons size={35} color={tintColor} name="target"/></View>
       ))
     }},
-    Library: { screen: Library, navigationOptions: {
+    Library: { screen: LibraryStack, navigationOptions: {
       tabBarIcon: (({tintColor}) => (
         <View><FontAwesome size={30} color={tintColor} name="book"/></View>
       )),
@@ -62,11 +67,6 @@ const TabNavigator = createBottomTabNavigator(
         paddingTop: 12,
       }
     }
-    // shifting: false,
-    // labeled: false,
-    // activeColor: '#21f0d3',
-    // inactiveColor: 'grey',
-    // barStyle: { backgroundColor: 'white' }
   }
 );
 
@@ -76,15 +76,8 @@ const MainNavigator = createStackNavigator(
     // LoginRegister,
   },
   {
-    headerMode: 'float',
+    headerMode: 'none',
     initialRouteName: 'Main',
-    defaultNavigationOptions: {
-      headerShown: true,
-      headerStyle: {
-        // height: 500,
-        backgroundColor: primaryColor
-      }
-    }
   }
 );
 

@@ -13,6 +13,10 @@ export class Dashboard extends React.Component {
     user: null
   }
 
+  static navigationOptions = {
+    title: 'Dashboard',
+  };
+
   async componentDidMount() {
     // await storeData('ObjStore', { test: 'this is an obj' });
     // await storeData('Test', 'Storing in local cache');

@@ -7,6 +7,10 @@ export class CreateArena extends React.Component {
 
   state: any = {}
 
+  static navigationOptions = {
+    title: 'Create Arena',
+  };
+
   componentDidMount(): any {
 
   }

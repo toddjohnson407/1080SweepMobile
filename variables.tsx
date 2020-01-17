@@ -26,10 +26,24 @@ const screenView: any = {
   backgroundColor: '#ffff'
 }
 
+const defaultNavigationOptions: any = {
+  headerShown: false,
+  headerMode: 'none',
+  headerTintColor: '#ffff',
+  headerTitleStyle: {
+    fontFamily: 'roboto-bold',
+    fontSize: 20
+  },
+  headerStyle: {
+    backgroundColor: primaryColor,
+  }
+}
+
 
 export { 
   primaryColor,
   bodyText,
   fonts,
-  screenView
+  screenView,
+  defaultNavigationOptions
 }

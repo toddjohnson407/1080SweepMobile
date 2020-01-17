@@ -20,7 +20,7 @@ export class LoginRegister extends React.Component {
   _isMounted: boolean = false;
 
   static navigationOptions = {
-    title: 'Home',
+    title: 'LOGINDSFKS',
   };
 
   state: any = {
