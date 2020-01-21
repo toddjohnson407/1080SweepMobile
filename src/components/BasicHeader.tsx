@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: 50,
     marginLeft: 24,
-    // fontFamily: 'roboto-light',
+    // fontFamily: 'roboto-regular',
+    // letterSpacing: 1,
     fontFamily: 'questrial',
     color: 'black'
   },
