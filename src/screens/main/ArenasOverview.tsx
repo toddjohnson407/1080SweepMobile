@@ -45,7 +45,7 @@ export class ArenasOverview extends React.Component {
         <SafeAreaView style={[vars.screenView, styles.arenasOverviewContainer]}>
           <ArenaCard title="Primary Arena" description="This is an example Arena." color="#019CBB"/>
           <ArenaCard title="Secondary Arena" description="This is an example Arena." color="#D78876"/>
-          <ArenaCard title="Primary Arena" description="This is an example Arena." color="pink"/>
+          <ArenaCard title="Tertiary Arena" description="This is an example Arena." color="pink"/>
         </SafeAreaView>
       </View>
     )

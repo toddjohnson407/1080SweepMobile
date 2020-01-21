@@ -6,6 +6,8 @@ import { retrieveData, storeData, allKeys, removeAllKeysData } from '@utils/Stor
 
 import * as vars from '@base/variables';
 import accountUtils from '@utils/AccountUtils';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { BasicHeader } from '@components/BasicHeader';
 
 export class Dashboard extends React.Component {
 
@@ -31,10 +33,12 @@ export class Dashboard extends React.Component {
 
   render(): any {
     return (
-      <View style={vars.screenView}>
-        <Text style={vars.bodyText}>Dashboard Screen Renders</Text>
-        <Image source={require('@assets/images/logo.png')} style={{ width: 200, height: 200 }}></Image>
-        <Button title="Test Logout" onPress={this.logout}/>
+      <View style={{flex:1, backgroundColor: '#ffff'}}>
+        <BasicHeader title="Dashboard"/>
+        <SafeAreaView style={vars.screenView}>
+          {/* <Image source={require('@assets/images/logo.png')} style={{ width: 200, height: 200 }}></Image> */}
+          <Button title="Test Logout" onPress={this.logout}/>
+        </SafeAreaView>
       </View>
     )
   }

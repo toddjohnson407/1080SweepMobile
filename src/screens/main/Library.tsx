@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, SafeAreaView } from 'react-native';
 
 import * as vars from '@base/variables'
+import { ArenaCard } from '@components/ArenaCard';
+import { BasicHeader } from '@components/BasicHeader';
 
 export class Library extends React.Component {
 
@@ -13,8 +15,8 @@ export class Library extends React.Component {
 
   render(): any {
     return (
-      <View>
-        <Text>Library Screen Renders</Text>
+      <View style={{flex:1, backgroundColor: '#ffff'}}>
+        <BasicHeader title="Library"/>
       </View>
     )
   }
@@ -22,6 +24,5 @@ export class Library extends React.Component {
 }
 
 const styles = StyleSheet.create({
-
 })
 

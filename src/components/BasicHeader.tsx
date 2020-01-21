@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    width: '40%',
+    width: '90%',
     fontSize: 50,
     marginLeft: 24,
     // fontFamily: 'roboto-light',
